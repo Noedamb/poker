@@ -1,0 +1,18 @@
+C:\Users\btssio\Documents\SharpDevelop Projects\Poker\Poker\obj\Debug\Poker.csprojResolveAssemblyReference.cache
+C:\Users\btssio\Documents\SharpDevelop Projects\Poker\Poker\bin\Debug\Poker.exe.config
+C:\Users\btssio\Documents\SharpDevelop Projects\Poker\Poker\bin\Debug\Poker.exe
+C:\Users\btssio\Documents\SharpDevelop Projects\Poker\Poker\bin\Debug\Poker.pdb
+C:\Users\btssio\Documents\SharpDevelop Projects\Poker\Poker\obj\Debug\Poker.exe
+C:\Users\btssio\Documents\SharpDevelop Projects\Poker\Poker\obj\Debug\Poker.pdb
+C:\Users\btssio\Desktop\Poker\Poker\bin\Debug\Poker.exe.config
+C:\Users\btssio\Desktop\Poker\Poker\bin\Debug\Poker.exe
+C:\Users\btssio\Desktop\Poker\Poker\bin\Debug\Poker.pdb
+C:\Users\btssio\Desktop\Poker\Poker\obj\Debug\Poker.csprojResolveAssemblyReference.cache
+C:\Users\btssio\Desktop\Poker\Poker\obj\Debug\Poker.exe
+C:\Users\btssio\Desktop\Poker\Poker\obj\Debug\Poker.pdb
+D:\01-COURS\Poker\Poker\bin\Debug\Poker.exe.config
+D:\01-COURS\Poker\Poker\bin\Debug\Poker.exe
+D:\01-COURS\Poker\Poker\bin\Debug\Poker.pdb
+D:\01-COURS\Poker\Poker\obj\Debug\Poker.csprojResolveAssemblyReference.cache
+D:\01-COURS\Poker\Poker\obj\Debug\Poker.exe
+D:\01-COURS\Poker\Poker\obj\Debug\Poker.pdb
