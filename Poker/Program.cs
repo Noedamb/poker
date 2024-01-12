@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.IO;
 using System.Text;
 using System.Runtime.InteropServices;
@@ -25,7 +25,7 @@ namespace Poker
 		//-------------------
 		// TYPES DE DONNEES
 		//-------------------
-
+ 
 		// Fin du jeu
 		public static bool fin = false;
 
@@ -169,37 +169,40 @@ namespace Poker
 
 		// Echange des cartes
 		// Paramètres : le tableau de 5 cartes et le tableau des numéros des cartes à échanger
-		private static void EchangeCarte(carte[] unJeu, int[] e)
-		{
-			char reponse;
-		    
-			while (true) {
-				Console.WriteLine("Veuillez entrer le numéro de la carte à échanger entre (1-4): ");
-				reponse = (char)_getche();
-		
-				if (reponse >= '1' && reponse <= '4') {
-					int numeroCarteAEchanger = reponse - '1';
-		
-					if (numeroCarteAEchanger >= 0 && numeroCarteAEchanger < unJeu.Length) {
-						// Générer une nouvelle carte pour remplacer la carte à échanger
-						carte nouvelleCarte = Tirage();
-		
-						// S'assurer que la nouvelle carte est unique dans le jeu
-						while (!CarteUnique(nouvelleCarte, unJeu, numeroCarteAEchanger)) {
-							nouvelleCarte = Tirage();
-						}
-		
-						// Remplacer la carte à échanger par la nouvelle carte
-						unJeu[numeroCarteAEchanger] = nouvelleCarte;
-						break; // Sortir de la boucle une fois l'échange effectué
-					} else {
-						Console.WriteLine("Numéro de carte invalide. Veuillez réessayer.");
-					}
-				} else {
-					Console.WriteLine("Entrée invalide. Veuillez entrer un numéro de carte entre 1 et 4.");
-				}
-			}
-		}
+		private static void EchangeCartes(carte[] unJeu, int[] numeros)
+{
+    if (numeros.Length != 4)
+    {
+        Console.WriteLine("Erreur : Vous devez fournir un tableau de 4 numéros de carte à échanger.");
+        return;
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        int numeroCarteAEchanger = numeros[i];
+
+        if (numeroCarteAEchanger >= 1 && numeroCarteAEchanger <= 4)
+        {
+            // Générer une nouvelle carte pour remplacer la carte à échanger
+            carte nouvelleCarte = Tirage();
+
+            // S'assurer que la nouvelle carte est unique dans le jeu
+            while (!CarteUnique(nouvelleCarte, unJeu, numeroCarteAEchanger - 1))
+            {
+                nouvelleCarte = Tirage();
+            }
+
+            // Remplacer la carte à échanger par la nouvelle carte
+            unJeu[numeroCarteAEchanger - 1] = nouvelleCarte;
+        }
+        else
+        {
+            Console.WriteLine("Erreur : Numéro de carte invalide pour l'échange {i + 1}. Veuillez réessayer.");
+        }
+    }
+}
+
+
 
 
 		// Pour afficher le Menu principal
@@ -226,26 +229,39 @@ namespace Poker
 		// Ici que vous appelez toutes les fonctions permettant de jouer au poker
 		private static void JouerAuPoker()
 		{
-			Console.Clear();
-			// Initialiser le jeu de cartes
-			TirageDuJeu(MonJeu);
+		    Console.Clear();
+		    // Initialiser le jeu de cartes
+		    TirageDuJeu(MonJeu);
+		    // Afficher le jeu initial
+		    AffichageCarte();
+		    // Déclarer et initialiser le tableau 'numeros'
+		    int[] numeros = { 1, 2, 3, 4 };
+		    for (int i = 0; i < 4; i++)
+		    {
+		        // Demander les cartes à échanger
+		        Console.WriteLine("Voulez-vous échanger des cartes ? (Oui/Non)");
+		        string choix = Console.ReadLine();
 		
-			// Afficher le jeu initial
-			AffichageCarte();
-			Console.ReadKey(true);
-		
-			// Déclarer et initialiser le tableau 'numeros'
-			int[] numeros = { 1, 2, 3, 4 };
-		
-			// Demander les cartes à échanger
-			EchangeCarte(MonJeu, numeros);
-		
-			AffichageCarte();
-		
-			AfficheResultat(MonJeu);
-		
-			EnregistrerJeu(MonJeu);
+		        if (choix.ToLower() == "oui")
+		        {
+		            Console.WriteLine("Entrez les numéros des cartes à échanger (1-4) pour l'échange ");
+		            for (int j = 0; j < 4; j++)
+		            {
+		                numeros[j] = int.Parse(Console.ReadLine());
+		            }
+					Console.Clear();
+		            EchangeCartes(MonJeu, numeros);
+		            AffichageCarte();
+		        }
+		        else
+		        {
+		            break;
+		        }
+		    }
+		    AfficheResultat(MonJeu);
+		    EnregistrerJeu(MonJeu);
 		}
+
 
 
 		// Tirage d'un jeu de 5 cartes
@@ -317,8 +333,9 @@ namespace Poker
 		// Enregistre le score dans le fichier texte
 		private static void EnregistrerJeu(carte[] unJeu)
 		{
+
 			Console.ForegroundColor = ConsoleColor.Green;
-			Console.WriteLine("Enregistrer le jeu ? <O/N>");
+			Console.WriteLine("Enregistrer le jeu ? <o/n>");
 			string E = Console.ReadLine();
 			if (E.ToLower() == "o") {
 				using (BinaryWriter writer = new BinaryWriter(new FileStream("Scores.txt", FileMode.Append, FileAccess.Write))) {
@@ -326,78 +343,79 @@ namespace Poker
 					Console.ForegroundColor = ConsoleColor.Green;
 					Console.WriteLine("Saisir votre PSEUDO");
 					string pseudo = Console.ReadLine();
-
+					
 					foreach (carte c in unJeu) {
 						sb.Append(c.valeur).Append(c.famille);
 					}
 					long score = (long)sb.ToString().GetHashCode() * 5;
-				
 					writer.Write(pseudo);
 					writer.Write(score);
 					switch (ChercheCombinaison(unJeu)) {
 						case combinaison.RIEN:
-							writer.Write("Pseudo :" +pseudo + " il n'a rien du tout... désolé!" + ", Score : " + score);
+							writer.Write("Pseudo :" + pseudo + " il n'a rien du tout... désolé!" + ", Score : " + score);
 							break;
 						case combinaison.PAIRE:
-							writer.Write("Pseudo :" +pseudo + " il n'a une simple paire..." + ", Score : " + score);
+							writer.Write("Pseudo :" + pseudo + " il n'a une simple paire..." + ", Score : " + score);
 							break;
 						case combinaison.DOUBLE_PAIRE:
-							writer.Write("Pseudo :" +pseudo + " il n'a une double paire; on peut espérer... " + ", Score : " + score);
+							writer.Write("Pseudo :" + pseudo + " il n'a une double paire; on peut espérer... " + ", Score : " + score);
 							break;
 						case combinaison.BRELAN:
-							writer.Write("Pseudo :" +pseudo + " il n'a un brelan; pas mal..." + ", Score : " + score);
+							writer.Write("Pseudo :" + pseudo + " il n'a un brelan; pas mal..." + ", Score : " + score);
 							break;
 						case combinaison.QUINTE:
-							writer.Write("Pseudo :" +pseudo + " il n'a une quinte; bien!" + ", Score : " + score);
+							writer.Write("Pseudo :" + pseudo + " il n'a une quinte; bien!" + ", Score : " + score);
 							break;
 						case combinaison.FULL:
-							writer.Write("Pseudo :" +pseudo + " il n'a un full; ouahh!" + ", Score : " + score);
+							writer.Write("Pseudo :" + pseudo + " il n'a un full; ouahh!" + ", Score : " + score);
 							break;
 						case combinaison.COULEUR:
-							writer.Write("Pseudo :" +pseudo + " il n'a une couleur; bravo!" + ", Score : " + score);
+							writer.Write("Pseudo :" + pseudo + " il n'a une couleur; bravo!" + ", Score : " + score);
 							break;
 						case combinaison.CARRE:
-							writer.Write("Pseudo :" +pseudo + " il n'a un carré; champion! " + ", Score : " + score);
+							writer.Write("Pseudo :" + pseudo + " il n'a un carré; champion! " + ", Score : " + score);
 							break;
 						case combinaison.QUINTE_FLUSH:
-							writer.Write("Pseudo :" +pseudo + " il n'a une quinte-flush; royal! " + ", Score : " + score);
+							writer.Write("Pseudo :" + pseudo + " il n'a une quinte-flush; royal! " + ", Score : " + score);
 							break;
 					}
-					;
-				
+					writer.Close();
 				}
+				
+				
+				
 			} else {
 				Console.Clear();
 			}		
-			
 		}
-
 		// Affiche le Scores
 		private static void VoirScores()
 		{
-		    using (BinaryReader reader = new BinaryReader(new FileStream("Scores.txt", FileMode.Open, FileAccess.Read)))
-		    {
-		        try
-		        {
-		            while (true)
-		            {
-		                if (reader.BaseStream.Position + sizeof(int) > reader.BaseStream.Length)
-		                    break; 
-		                string pseudo = reader.ReadString();
-		                if (reader.BaseStream.Position + sizeof(long) > reader.BaseStream.Length)
-		                    break; 
-		                long score = reader.ReadInt64();
-		                Console.WriteLine("Pseudo :" + pseudo + ", Score : " + score);
-		            }
-		        }
-		        catch (EndOfStreamException)
-		        {
-		            
-		        }
-		    }
+			using (BinaryReader reader = new BinaryReader(new FileStream("Scores.txt", FileMode.Open, FileAccess.Read))) {
+
+				try {
+					Console.ResetColor();
+					Console.WriteLine("");
+					Console.WriteLine("+-----------+");
+					Console.WriteLine("|  SCORES   |");
+					Console.WriteLine("+-----------+");
+
+					while (true) {
+
+						if (reader.BaseStream.Position + sizeof(int) > reader.BaseStream.Length)
+							break;
+						string pseudo = reader.ReadString();
+						if (reader.BaseStream.Position + sizeof(long) > reader.BaseStream.Length)
+							break;
+						long score = reader.ReadInt64();
+						Console.WriteLine("Pseudo: " + pseudo + ", Score: " + score);
+					}
+				} catch (EndOfStreamException) {
+				}
+			}
 		}
-
-
+		
+		
 		// Affiche résultat
 		private static void AfficheResultat(carte[] unJeu)
 		{
@@ -472,5 +490,3 @@ namespace Poker
 		}
 	}
 }
-
-
